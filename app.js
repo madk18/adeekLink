@@ -237,6 +237,7 @@ function clearSelectedServiceImage() {
   imagePreview.removeAttribute("src")
   if (previewObjectUrl) URL.revokeObjectURL(previewObjectUrl)
   previewObjectUrl = null
+  imagePreviewWrap.hidden = true
 }
 
 serviceImageInput.addEventListener("change", () => {
@@ -261,9 +262,15 @@ serviceImageInput.addEventListener("change", () => {
   selectedImageFile = file
   if (previewObjectUrl) URL.revokeObjectURL(previewObjectUrl)
   previewObjectUrl = URL.createObjectURL(file)
+  imagePreview.onerror = () => {
+    imagePreviewWrap.hidden = true
+    messageEl.textContent = "Sawirka lama soo bandhigi karin. Fadlan dooro JPG, PNG ama WebP kale."
+  }
+  imagePreview.onload = () => {
+    imagePreviewWrap.hidden = false
+    messageEl.textContent = "Sawirka waa diyaar. Adeegga la socda ayaa la kaydin doonaa."
+  }
   imagePreview.src = previewObjectUrl
-  imagePreviewWrap.hidden = false
-  messageEl.textContent = "Sawirka waa diyaar. Adeegga la socda ayaa la kaydin doonaa."
 })
 
 removeImageButton.addEventListener("click", clearSelectedServiceImage)
