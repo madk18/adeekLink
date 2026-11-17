@@ -147,3 +147,45 @@
 .service-photo{width:100%;height:155px;object-fit:cover;border-radius:10px;margin-bottom:13px;background:#edf4eb}
 .service-card-placeholder{width:100%;height:105px;border-radius:10px;margin-bottom:13px;background:linear-gradient(135deg,#eaf5e9,#f3f0ff);display:grid;place-items:center;font-size:34px}
 @media(max-width:680px){.photo-upload-control{align-items:flex-start;flex-wrap:wrap}.photo-upload-control input{max-width:100%}.service-photo{height:190px}}
+
+/* Refined service submission experience */
+.add-section{align-items:start;gap:clamp(28px,5vw,70px);padding-top:76px;padding-bottom:76px}
+.add-intro{position:sticky;top:118px;align-self:start}
+.add-intro h2{font-size:clamp(38px,4.2vw,54px);line-height:1.08;letter-spacing:-2px}
+.add-intro>p:not(.eyebrow){max-width:390px;font-size:14px;line-height:1.8;color:#d0ded4}
+.add-benefit{font-size:12px;margin-top:15px}
+.service-form{width:100%;max-width:680px;justify-self:end;border-radius:22px;padding:clamp(22px,3vw,34px);border:1px solid #e8eee7;box-shadow:0 24px 70px #061b1026}
+.form-heading{gap:15px;margin-bottom:25px}
+.form-icon{width:50px;height:50px;border-radius:15px;font-size:27px;flex:none}
+.form-step{display:block;color:#6a9875;font-size:9px;letter-spacing:1.2px;font-weight:800;margin-bottom:4px}
+.form-heading h3{font-size:21px;letter-spacing:-.6px}
+.form-heading p{font-size:11px;margin-top:5px}
+.form-section-label{font-size:9px;letter-spacing:1.3px;font-weight:800;color:#829087;border-bottom:1px solid #edf1ec;padding-bottom:10px;margin:0 0 20px}
+.service-form label{font-size:11px;gap:8px;margin-bottom:17px;color:#26372c}
+.service-form input:not([type=file]),.service-form select,.service-form textarea{min-height:49px;border:1px solid #dce6dc;background:#fbfcfa;border-radius:11px;padding:14px 15px;font-size:12px;transition:border-color .2s,box-shadow .2s,background .2s}
+.service-form textarea{min-height:112px;line-height:1.6}
+.service-form input:focus,.service-form select:focus,.service-form textarea:focus{border-color:#5a9b6d;background:#fff;box-shadow:0 0 0 4px #5a9b6d18;outline:0}
+.service-form input::placeholder,.service-form textarea::placeholder{color:#9aa69d}
+.form-row{gap:16px}
+.photo-field{margin:2px 0 18px}
+.photo-field-heading{display:flex;align-items:center;gap:8px;margin-bottom:9px;font-size:11px;font-weight:800}
+.optional-tag{font-size:9px;font-weight:700;color:#78867b;background:#f0f4ef;padding:4px 8px;border-radius:30px}
+.photo-upload-control{position:relative;display:flex;align-items:center;gap:14px;min-height:94px;padding:18px;border:1.5px dashed #b7cdb8;border-radius:14px;background:linear-gradient(115deg,#f6faf5,#fbfcfa);cursor:pointer;transition:border-color .2s,background .2s,transform .2s}
+.photo-upload-control:hover{border-color:#4f9564;background:#f0f7ef;transform:translateY(-1px)}
+.photo-upload-control input[type=file]{position:absolute;inset:0;width:100%;height:100%;opacity:0;cursor:pointer;z-index:2}
+.photo-upload-icon{width:46px;height:46px;display:grid;place-items:center;border-radius:14px;background:#e6f2e5;color:#17643d;font-size:25px;flex:none}
+.photo-upload-copy{display:grid;gap:5px;min-width:0}
+.photo-upload-copy b{font-size:11px;color:#26372c}
+.photo-upload-copy small{font-size:10px;color:#7b897e}
+.upload-arrow{margin-left:auto;color:#438557;font-size:22px;font-weight:700}
+.image-preview-wrap{display:flex;align-items:center;gap:15px;padding:12px;margin-top:11px;border:1px solid #e4ece3;border-radius:13px;background:#fbfdfb}
+.image-preview-wrap img{display:block;width:112px;height:90px;object-fit:cover;border-radius:9px;background:#edf3ed;flex:none}
+.image-preview-info{display:flex;flex-direction:column;align-items:flex-start;gap:5px}
+.image-preview-info b{font-size:11px}
+.image-preview-info small{font-size:10px;color:#7b897e}
+.remove-image{margin-top:4px}
+.submit-button{min-height:54px;border-radius:12px;font-size:13px;box-shadow:0 9px 20px #17643d25}
+.submit-button:hover{transform:translateY(-1px)}
+.form-footnote{font-size:10px;line-height:1.6;margin-top:13px}
+@media(max-width:800px){.add-section{grid-template-columns:1fr;gap:30px}.add-intro{position:static}.add-intro h2{font-size:42px}.service-form{max-width:none;justify-self:stretch}}
+@media(max-width:560px){.service-form{padding:21px 16px;border-radius:17px}.form-row{grid-template-columns:1fr;gap:0}.photo-upload-control{min-height:88px;padding:13px;gap:10px}.photo-upload-icon{width:40px;height:40px}.photo-upload-copy b{font-size:10px}.photo-upload-copy small{font-size:9px}.image-preview-wrap{align-items:flex-start}.image-preview-wrap img{width:88px;height:80px}.add-section{padding:46px 17px}}
