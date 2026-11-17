@@ -89,6 +89,7 @@ const emptyEl = document.querySelector("#empty-state")
 const formEl = document.querySelector("#service-form")
 const messageEl = document.querySelector("#form-message")
 const dashboardEl = document.querySelector("#dashboard")
+const dashboardNavLink = document.querySelector("#dashboard-nav-link")
 const myServiceListEl = document.querySelector("#my-service-list")
 const myServiceCountEl = document.querySelector("#my-service-count")
 const dashboardWelcomeEl = document.querySelector("#dashboard-welcome")
@@ -361,6 +362,7 @@ function setAuthMode(mode) {
 function showSignedInState(user) {
   if (user) {
     dashboardEl.hidden = false
+    dashboardNavLink.hidden = false
     const displayName =
       user.user_metadata?.full_name || user.email || "isticmaale"
     authStatus.textContent = `Waad soo gashay: ${displayName}`
@@ -372,6 +374,7 @@ function showSignedInState(user) {
     authNameLabel.hidden = true
   } else {
     dashboardEl.hidden = true
+    dashboardNavLink.hidden = true
     myServiceListEl.replaceChildren()
     myServiceCountEl.textContent = "0"
     authStatus.textContent = "Xaaladda: kuma aadan soo gelin."
