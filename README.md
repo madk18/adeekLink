@@ -5,6 +5,7 @@ AdeegLink is a community services marketplace concept built to help people showc
 ## Current features
 - Somali-language responsive marketplace interface
 - Search services by keyword and filter by category
+- Personal signed-in dashboard showing the current user’s service listings
 - Service listing form
 - Supabase email/password sign-up, sign-in and sign-out
 - Fetches service listings from the Supabase `services` table
