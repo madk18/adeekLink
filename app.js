@@ -177,7 +177,7 @@ function renderServices() {
         ? `<a class="contact-link" href="${escapeHTML(contactHref)}">La xiriir adeeg-bixiyaha ↗</a>`
         : `<div class="contact-link">Xiriir: ${escapeHTML(safeContact)}</div>`
       return `<article class="service-card">
-      <div class="card-top"><span class="service-icon" aria-hidden="true">${escapeHTML(service.icon || icons[service.category] || "✨")}</span><span><span class="category-pill">${escapeHTML(service.category)}</span>${service.demo ? '<span class="demo-pill">Tusaale</span>' : ""}</span></div>
+      ${service.imageUrl ? `<img class="service-photo" src="${escapeHTML(service.imageUrl)}" alt="Sawirka adeegga: ${escapeHTML(service.name)}" loading="lazy">` : `<div class="service-card-placeholder" aria-hidden="true">${escapeHTML(service.icon || icons[service.category] || "✨")}</div>`}<div class="card-top"><span><span class="category-pill">${escapeHTML(service.category)}</span>${service.demo ? '<span class="demo-pill">Tusaale</span>' : ""}</span></div>
       <h3>${escapeHTML(service.name)}</h3>
       <p class="description">${escapeHTML(service.description)}</p>
       <div class="service-meta"><span class="city">⌖ ${escapeHTML(service.city)}</span><span class="price">${escapeHTML(service.price || "Qiime la isla garto")}</span></div>
@@ -219,6 +219,7 @@ async function loadServicesFromDatabase() {
     description: row.description,
     price: row.price || "Qiime la isla garto",
     contact: row.contact || "",
+    imageUrl: row.image_url || "",
     icon: icons[row.category] || "✨",
     online: true,
   }))
@@ -226,6 +227,58 @@ async function loadServicesFromDatabase() {
   // Keep clearly-labelled demo listings, then add real listings from Supabase.
   services = [...onlineServices, ...starterServices]
   renderServices()
+}
+
+
+function clearSelectedServiceImage() {
+  selectedImageFile = null
+  serviceImageInput.value = ""
+  imagePreviewWrap.hidden = true
+  imagePreview.removeAttribute("src")
+  if (previewObjectUrl) URL.revokeObjectURL(previewObjectUrl)
+  previewObjectUrl = null
+}
+
+serviceImageInput.addEventListener("change", () => {
+  const file = serviceImageInput.files?.[0]
+  if (!file) {
+    clearSelectedServiceImage()
+    return
+  }
+
+  const allowedTypes = ["image/jpeg", "image/png", "image/webp"]
+  if (!allowedTypes.includes(file.type)) {
+    messageEl.textContent = "Fadlan dooro sawir JPG, PNG ama WebP ah."
+    clearSelectedServiceImage()
+    return
+  }
+  if (file.size > 5 * 1024 * 1024) {
+    messageEl.textContent = "Sawirku waa inuu ka yaraadaa 5 MB."
+    clearSelectedServiceImage()
+    return
+  }
+
+  selectedImageFile = file
+  if (previewObjectUrl) URL.revokeObjectURL(previewObjectUrl)
+  previewObjectUrl = URL.createObjectURL(file)
+  imagePreview.src = previewObjectUrl
+  imagePreviewWrap.hidden = false
+  messageEl.textContent = "Sawirka waa diyaar. Adeegga la socda ayaa la kaydin doonaa."
+})
+
+removeImageButton.addEventListener("click", clearSelectedServiceImage)
+
+async function uploadServiceImage(file, userId) {
+  if (!file) return null
+  const extension = ({ "image/jpeg": "jpg", "image/png": "png", "image/webp": "webp" })[file.type]
+  if (!extension) throw new Error("Nooca sawirka lama oggola.")
+  const filePath = `${userId}/${crypto.randomUUID()}.${extension}`
+  const { error } = await supabaseClient.storage
+    .from("service-images")
+    .upload(filePath, file, { contentType: file.type, upsert: false })
+  if (error) throw error
+  const { data } = supabaseClient.storage.from("service-images").getPublicUrl(filePath)
+  return data.publicUrl
 }
 
 formEl.addEventListener("submit", async (event) => {
@@ -261,7 +314,16 @@ formEl.addEventListener("submit", async (event) => {
 
   const submitButton = formEl.querySelector('button[type="submit"]')
   submitButton.disabled = true
-  messageEl.textContent = "Adeegga waxaa lagu kaydinayaa database-ka..."
+  messageEl.textContent = "Adeegga iyo sawirka waa la kaydinayaa..."
+
+  let imageUrl = null
+  try {
+    imageUrl = await uploadServiceImage(selectedImageFile, user.id)
+  } catch (uploadError) {
+    submitButton.disabled = false
+    messageEl.textContent = "Sawirka lama soo gelin karin. Hubi Supabase Storage iyo rukhsadaha: " + uploadError.message
+    return
+  }
 
   const { data: inserted, error } = await supabaseClient
     .from("services")
@@ -273,6 +335,7 @@ formEl.addEventListener("submit", async (event) => {
       price,
       city,
       contact,
+      image_url: imageUrl,
     })
     .select()
     .single()
@@ -293,11 +356,13 @@ formEl.addEventListener("submit", async (event) => {
     description: inserted.description,
     price: inserted.price || "Qiime la isla garto",
     contact: inserted.contact || "",
+    imageUrl: inserted.image_url || "",
     icon: icons[inserted.category] || "✨",
     online: true,
   })
   renderServices()
   formEl.reset()
+  clearSelectedServiceImage()
   messageEl.textContent =
     "Guul! Adeeggaaga waxaa lagu kaydiyey Supabase, wuxuuna ka muuqan karaa isticmaalayaasha kale."
   document.querySelector("#adeegyada").scrollIntoView({ behavior: "smooth" })
@@ -321,6 +386,12 @@ const signupButton = document.querySelector("#signup-button")
 const loginButton = document.querySelector("#login-button")
 const logoutButton = document.querySelector("#logout-button")
 const authNameLabel = document.querySelector("#auth-name-label")
+const serviceImageInput = document.querySelector("#service-image")
+const imagePreviewWrap = document.querySelector("#image-preview-wrap")
+const imagePreview = document.querySelector("#image-preview")
+const removeImageButton = document.querySelector("#remove-image")
+let selectedImageFile = null
+let previewObjectUrl = null
 
 let supabaseClient = null
 let authMode = "signup"
