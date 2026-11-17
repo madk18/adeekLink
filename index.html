@@ -1,0 +1,88 @@
+<!doctype html>
+<html lang="so">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#14532d">
+  <meta name="description" content="AdeegLink — hel adeeg ama soo bandhig adeeggaaga gudaha Sweden.">
+  <title>AdeegLink | Adeegyo isku xiran</title>
+  <link rel="stylesheet" href="style.css">
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2" defer></script>
+  <script src="app.js" defer></script>
+</head>
+<body>
+  <header class="site-header">
+    <a class="brand" href="#home" aria-label="AdeegLink bogga hore"><span class="brand-mark">A</span><span>Adeeg<span class="brand-light">Link</span></span></a>
+    <a class="header-cta" href="#ku-dar">+ Ku dar adeeg</a>
+  </header>
+
+  <main id="home">
+    <section class="hero">
+      <div class="hero-copy">
+        <p class="eyebrow">ADEEGYO • BULSHO • FURSADO</p>
+        <h1>Adeeg aad u baahan tahay,<br><span>halkaan ka hel.</span></h1>
+        <p class="hero-description">Raadi adeegyo ay bixiyaan Soomaalida Sweden, ama dadka kale tus xirfaddaada.</p>
+        <a class="primary-button" href="#adeegyada">Baadh adeegyada <span aria-hidden="true">→</span></a>
+      </div>
+      <div class="hero-art" aria-hidden="true">
+        <div class="art-circle circle-one"></div><div class="art-circle circle-two"></div>
+        <div class="art-card"><span class="art-icon">✓</span><div><strong>Adeeg la isku halayn karo</strong><small>Bulshadeenna dhexdeeda</small></div></div>
+        <div class="art-tag">Isku xirnow <span>↗</span></div>
+      </div>
+    </section>
+
+    <section class="search-panel" aria-label="Raadi adeeg">
+      <label class="search-box"><span aria-hidden="true">⌕</span><input id="search-input" type="search" placeholder="Maxaad raadinaysaa? Tusaale: nadiifin" autocomplete="off"></label>
+      <label class="select-wrap"><span class="sr-only">Nooca adeegga</span><select id="category-filter"><option value="all">Dhammaan adeegyada</option><option value="Guri">Guri & nadaafad</option><option value="Dayactir">Dayactir</option><option value="Dijitaal">Adeegyo dijitaal ah</option><option value="Gaadiid">Gaadiid & guuritaan</option><option value="Waxbarasho">Waxbarasho & turjumaad</option><option value="Kale">Kuwa kale</option></select></label>
+    </section>
+
+    <section class="services-section" id="adeegyada">
+      <div class="section-heading"><div><p class="eyebrow">FURSADO BULSHO</p><h2>Adeegyada la heli karo</h2><p class="section-subtitle" id="results-count">Adeegyo tijaabo ah</p></div><span class="section-badge">Sweden 🇸🇪</span></div>
+      <div class="service-grid" id="service-list" aria-live="polite"></div>
+      <p class="empty-state" id="empty-state" hidden>Wax adeeg ah lama helin. Isku day eray kale ama qayb kale.</p>
+    </section>
+
+    <section class="add-section" id="ku-dar">
+      <div class="add-intro"><p class="eyebrow">ADEEGGAAGA SOO BANDHIG</p><h2>Xirfaddaadu waa fursad.</h2><p>Ku dar adeeg tijaabo ah si uu uga muuqdo liiska boggan. Noocan koowaad xogtu waxay ku kaydsamaysaa browser-kan oo keliya.</p><div class="trust-note"><span>✦</span> Bilaabid fudud, hal tallaabo markiiba.</div></div>
+      <form id="service-form" class="service-form">
+        <div class="form-heading"><span class="form-icon">＋</span><div><h3>Ku dar adeeg cusub</h3><p>Buuxi xogta hoose</p></div></div>
+        <label>Magaca adeegga<input name="name" required maxlength="60" placeholder="Tusaale: Nadiifinta guryaha"></label>
+        <div class="form-row"><label>Qaybta<select name="category" required><option value="Guri">Guri & nadaafad</option><option value="Dayactir">Dayactir</option><option value="Dijitaal">Adeegyo dijitaal ah</option><option value="Gaadiid">Gaadiid & guuritaan</option><option value="Waxbarasho">Waxbarasho & turjumaad</option><option value="Kale">Kuwa kale</option></select></label><label>Magaalada<input name="city" required maxlength="40" placeholder="Tusaale: Stockholm"></label></div>
+        <label>Faahfaahin<textarea name="description" required maxlength="240" rows="3" placeholder="Sharax adeegga aad bixiso..."></textarea></label>
+        <div class="form-row"><label>Qiimaha (ikhtiyaari)<input name="price" maxlength="40" placeholder="Tusaale: 250 kr/saacaddii"></label><label>Habka xiriirka<input name="contact" required maxlength="80" placeholder="Email ama telefoon"></label></div>
+        <button class="primary-button submit-button" type="submit">Ku dar adeegga <span aria-hidden="true">→</span></button>
+        <p class="form-message" id="form-message" role="status"></p>
+      </form>
+    </section>
+
+
+    <section class="auth-section" id="akoon">
+      <div class="auth-intro">
+        <p class="eyebrow">KU SOO BIIR ADEEGLINK</p>
+        <h2>Akawnkaaga sameyso</h2>
+        <p>Sameyso akoon si aan mustaqbalka ugu xirno adeegyada aad soo geliso iyo profile-kaaga.</p>
+      </div>
+      <form id="auth-form" class="auth-form">
+        <label id="auth-name-label">Magacaaga
+          <input id="auth-name" type="text" placeholder="Magaca oo buuxa" maxlength="80" autocomplete="name">
+        </label>
+        <label>Email-kaaga
+          <input id="auth-email" type="email" required placeholder="magac@example.com" autocomplete="email">
+        </label>
+        <label>Password
+          <input id="auth-password" type="password" required minlength="6" placeholder="Ugu yaraan 6 xaraf" autocomplete="current-password">
+        </label>
+        <div class="auth-actions">
+          <button class="primary-button" id="signup-button" type="submit">Isdiiwaangeli</button>
+          <button class="secondary-button" id="login-button" type="button">Soo gal</button>
+          <button class="secondary-button" id="logout-button" type="button" hidden>Ka bax</button>
+        </div>
+        <p class="auth-message" id="auth-message" role="status" aria-live="polite"></p>
+        <p class="auth-status" id="auth-status">Xaaladda: kuma aadan soo gelin.</p>
+      </form>
+    </section>
+  </main>
+
+  <footer><a class="brand footer-brand" href="#home"><span class="brand-mark">A</span><span>Adeeg<span class="brand-light">Link</span></span></a><p>Bulshadeenna isku xir. Fursadaha wadaag.</p><small>© <span id="year"></span> AdeegLink • Nooc tijaabo ah</small></footer>
+</body>
+</html>
