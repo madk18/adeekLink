@@ -39,7 +39,7 @@ The current frontend expects a `services` table with these fields:
 
 The table should have Row Level Security enabled and policies appropriate to the product. At minimum, users should only be allowed to insert listings associated with their own authenticated user ID. Public read access should be intentional because listings are meant to be discoverable. Review the project's Supabase policies before launching with real user data.
 
-## Important launch checklist
+## Service image uploads\nCreate a Supabase Storage bucket named `service-images`. The current frontend requests public URLs for listing photos, so the bucket must be configured for public reads. Add Storage upload policies that allow authenticated users to upload only into a folder named with their own auth user ID. The frontend stores the resulting URL in the `services.image_url` column.\n\nExample SQL to add the image URL column if it does not exist:\n\n```sql\nalter table public.services add column if not exists image_url text;\n```\n\nThe upload UI accepts JPEG, PNG and WebP images up to 5 MB. Verify Storage policies and database RLS before using real user content.\n\n## Important launch checklist
 - Confirm Supabase email verification and password reset settings.
 - Review RLS policies for SELECT and INSERT; add ownership checks for UPDATE/DELETE if those features are introduced.
 - Add edit/delete controls restricted to the listing owner.
