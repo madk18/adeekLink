@@ -1,3 +1,34 @@
+
+const menuToggle = document.querySelector("#menu-toggle")
+const mainNavigation = document.querySelector("#main-navigation")
+
+function closeMobileMenu() {
+  if (!menuToggle || !mainNavigation) return
+  menuToggle.setAttribute("aria-expanded", "false")
+  menuToggle.setAttribute("aria-label", "Fur menu-ga")
+  mainNavigation.classList.remove("is-open")
+}
+
+if (menuToggle && mainNavigation) {
+  menuToggle.addEventListener("click", () => {
+    const isOpen = menuToggle.getAttribute("aria-expanded") === "true"
+    menuToggle.setAttribute("aria-expanded", String(!isOpen))
+    menuToggle.setAttribute("aria-label", isOpen ? "Fur menu-ga" : "Xir menu-ga")
+    mainNavigation.classList.toggle("is-open", !isOpen)
+  })
+
+  mainNavigation.querySelectorAll("a").forEach((link) => {
+    link.addEventListener("click", closeMobileMenu)
+  })
+
+  document.addEventListener("keydown", (event) => {
+    if (event.key === "Escape") closeMobileMenu()
+  })
+
+  window.addEventListener("resize", () => {
+    if (window.innerWidth > 680) closeMobileMenu()
+  })
+}
 const starterServices = [
   {
     id: "demo-1",
