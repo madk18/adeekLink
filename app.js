@@ -302,7 +302,7 @@ async function loadMyServices(user) {
 
   const { data, error } = await supabaseClient
     .from("services")
-    .select("id,title,category,description,city,price,created_at")
+    .select("id,title,category,description,city,price,contact,created_at")
     .eq("user_id", user.id)
     .order("created_at", { ascending: false })
 
@@ -322,9 +322,12 @@ async function loadMyServices(user) {
   myServiceListEl.replaceChildren(...data.map((service) => {
     const row = document.createElement("article")
     row.className = "my-service-row"
+    row.dataset.serviceId = String(service.id)
+
     const icon = document.createElement("span")
     icon.className = "my-service-icon"
     icon.textContent = icons[service.category] || "✨"
+
     const details = document.createElement("div")
     details.className = "my-service-details"
     const title = document.createElement("h4")
@@ -332,13 +335,206 @@ async function loadMyServices(user) {
     const meta = document.createElement("p")
     meta.textContent = [service.category, service.city, service.price || "Qiime la isla garto"].filter(Boolean).join(" · ")
     details.append(title, meta)
-    const status = document.createElement("span")
-    status.className = "listing-status"
-    status.textContent = "Database"
-    row.append(icon, details, status)
+
+    const actions = document.createElement("div")
+    actions.className = "my-service-actions"
+    const editButton = document.createElement("button")
+    editButton.type = "button"
+    editButton.className = "listing-action edit-listing"
+    editButton.dataset.action = "edit"
+    editButton.textContent = "Wax ka beddel"
+    const deleteButton = document.createElement("button")
+    deleteButton.type = "button"
+    deleteButton.className = "listing-action delete-listing"
+    deleteButton.dataset.action = "delete"
+    deleteButton.textContent = "Tirtir"
+    actions.append(editButton, deleteButton)
+
+    row.append(icon, details, actions)
     return row
   }))
 }
+
+function createEditForm(service) {
+  const form = document.createElement("form")
+  form.className = "listing-edit-form"
+  form.dataset.editForm = "true"
+
+  const fields = [
+    ["title", "Magaca adeegga", service.title, "text"],
+    ["city", "Magaalada", service.city || "", "text"],
+    ["price", "Qiimaha", service.price || "", "text"],
+    ["contact", "Email ama telefoon", service.contact || "", "text"],
+  ]
+
+  fields.forEach(([name, labelText, value, type]) => {
+    const label = document.createElement("label")
+    label.textContent = labelText
+    const input = document.createElement("input")
+    input.name = name
+    input.type = type
+    input.maxLength = name === "title" ? 60 : 80
+    input.required = name !== "price"
+    input.value = value
+    label.append(input)
+    form.append(label)
+  })
+
+  const categoryLabel = document.createElement("label")
+  categoryLabel.textContent = "Qaybta"
+  const category = document.createElement("select")
+  category.name = "category"
+  ;["Guri", "Dayactir", "Dijitaal", "Gaadiid", "Waxbarasho", "Kale"].forEach((value) => {
+    const option = document.createElement("option")
+    option.value = value
+    option.textContent = value
+    option.selected = service.category === value
+    category.append(option)
+  })
+  categoryLabel.append(category)
+  form.append(categoryLabel)
+
+  const descriptionLabel = document.createElement("label")
+  descriptionLabel.textContent = "Faahfaahinta adeegga"
+  const description = document.createElement("textarea")
+  description.name = "description"
+  description.required = true
+  description.maxLength = 240
+  description.rows = 3
+  description.value = service.description || ""
+  descriptionLabel.append(description)
+  form.append(descriptionLabel)
+
+  const actions = document.createElement("div")
+  actions.className = "edit-form-actions"
+  const save = document.createElement("button")
+  save.type = "submit"
+  save.className = "primary-button"
+  save.textContent = "Kaydi isbeddelka"
+  const cancel = document.createElement("button")
+  cancel.type = "button"
+  cancel.className = "secondary-button"
+  cancel.dataset.action = "cancel-edit"
+  cancel.textContent = "Ka noqo"
+  actions.append(save, cancel)
+  form.append(actions)
+  return form
+}
+
+myServiceListEl.addEventListener("click", async (event) => {
+  const button = event.target.closest("button[data-action]")
+  if (!button) return
+  const row = button.closest(".my-service-row")
+  if (!row) return
+
+  const action = button.dataset.action
+  const serviceId = row.dataset.serviceId
+
+  if (action === "cancel-edit") {
+    const currentUser = (await supabaseClient.auth.getUser()).data.user
+    if (currentUser) await loadMyServices(currentUser)
+    return
+  }
+
+  if (action === "edit") {
+    const { data: userData } = await supabaseClient.auth.getUser()
+    const user = userData?.user
+    if (!user) return
+    const { data, error } = await supabaseClient
+      .from("services")
+      .select("id,title,category,description,city,price,contact")
+      .eq("id", serviceId)
+      .eq("user_id", user.id)
+      .single()
+
+    if (error || !data) {
+      dashboardMessageEl.textContent = "Adeeggan lama heli karin ama rukhsad uma lihid."
+      return
+    }
+    row.replaceChildren(createEditForm(data))
+    return
+  }
+
+  if (action === "delete") {
+    if (!window.confirm("Ma hubtaa inaad tirtirayso adeeggan? Tallaabadan dib looma celin karo.")) return
+    button.disabled = true
+    const { data: userData } = await supabaseClient.auth.getUser()
+    const user = userData?.user
+    if (!user) {
+      dashboardMessageEl.textContent = "Fadlan mar kale soo gal akoonkaaga."
+      return
+    }
+
+    const { error } = await supabaseClient
+      .from("services")
+      .delete()
+      .eq("id", serviceId)
+      .eq("user_id", user.id)
+
+    if (error) {
+      console.error("AdeegLink: delete failed.", error)
+      dashboardMessageEl.textContent = "Adeegga lama tirtiri karin. Hubi DELETE policy-ga Supabase."
+      button.disabled = false
+      return
+    }
+
+    dashboardMessageEl.textContent = "Adeegga si guul leh ayaa loo tirtiray."
+    await loadServicesFromDatabase()
+    await loadMyServices(user)
+  }
+})
+
+myServiceListEl.addEventListener("submit", async (event) => {
+  const form = event.target.closest("form[data-edit-form]")
+  if (!form) return
+  event.preventDefault()
+
+  const row = form.closest(".my-service-row")
+  const serviceId = row?.dataset.serviceId
+  const { data: userData } = await supabaseClient.auth.getUser()
+  const user = userData?.user
+  if (!user || !serviceId) {
+    dashboardMessageEl.textContent = "Fadlan mar kale soo gal akoonkaaga."
+    return
+  }
+
+  const values = new FormData(form)
+  const updates = {
+    title: String(values.get("title") || "").trim(),
+    category: String(values.get("category") || "Kale"),
+    description: String(values.get("description") || "").trim(),
+    city: String(values.get("city") || "").trim(),
+    price: String(values.get("price") || "").trim() || null,
+    contact: String(values.get("contact") || "").trim(),
+  }
+
+  if (!updates.title || !updates.description || !updates.city || !updates.contact) {
+    dashboardMessageEl.textContent = "Fadlan buuxi magaca, faahfaahinta, magaalada iyo xiriirka."
+    return
+  }
+
+  const saveButton = form.querySelector('button[type="submit"]')
+  saveButton.disabled = true
+  saveButton.textContent = "Waa la kaydinayaa..."
+
+  const { error } = await supabaseClient
+    .from("services")
+    .update(updates)
+    .eq("id", serviceId)
+    .eq("user_id", user.id)
+
+  if (error) {
+    console.error("AdeegLink: update failed.", error)
+    dashboardMessageEl.textContent = "Isbeddelka lama kaydin karin. Hubi UPDATE policy-ga Supabase."
+    saveButton.disabled = false
+    saveButton.textContent = "Kaydi isbeddelka"
+    return
+  }
+
+  dashboardMessageEl.textContent = "Adeeggaaga waa la cusboonaysiiyey."
+  await loadServicesFromDatabase()
+  await loadMyServices(user)
+})
 
 function setAuthMessage(message, isError = false) {
   authMessage.textContent = message
