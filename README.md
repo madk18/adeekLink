@@ -1,0 +1,49 @@
+# AdeegLink
+
+AdeegLink is a community services marketplace concept built to help people showcase their skills and services and help others discover service providers.
+
+## Current features
+- Somali-language responsive marketplace interface
+- Search services by keyword and filter by category
+- Service listing form
+- Supabase email/password sign-up, sign-in and sign-out
+- Fetches service listings from the Supabase `services` table
+- Associates new listings with the signed-in Supabase user
+- Loading, empty and error messages
+- Demo listings are labelled as examples and are not presented as real providers
+
+## Tech stack
+- HTML5
+- CSS3
+- Vanilla JavaScript
+- Supabase Auth and Database
+
+## Run locally
+Open `index.html` using VS Code Live Server or another local static server. Internet access is needed for Google Fonts, Supabase and the demo data source.
+
+## Supabase configuration
+The frontend currently uses the project's Supabase URL and publishable key in `app.js`. A Supabase publishable/anon key is intended for browser use; never put a Supabase service-role key or database password in frontend code.
+
+The current frontend expects a `services` table with these fields:
+- `id`
+- `user_id`
+- `title`
+- `category`
+- `description`
+- `price`
+- `city`
+- `contact`
+- `created_at`
+
+The table should have Row Level Security enabled and policies appropriate to the product. At minimum, users should only be allowed to insert listings associated with their own authenticated user ID. Public read access should be intentional because listings are meant to be discoverable. Review the project's Supabase policies before launching with real user data.
+
+## Important launch checklist
+- Confirm Supabase email verification and password reset settings.
+- Review RLS policies for SELECT and INSERT; add ownership checks for UPDATE/DELETE if those features are introduced.
+- Add edit/delete controls restricted to the listing owner.
+- Add profile details, image upload with file validation, and moderation/reporting before public launch.
+- Replace the clearly labelled sample listings with real provider content when ready.
+- Add privacy information and clear consent before displaying personal contact details.
+
+## Project status
+This is an evolving personal project. The refreshed UI and frontend code do not by themselves verify the Supabase database configuration or production security policies.
