@@ -260,17 +260,34 @@ serviceImageInput.addEventListener("change", () => {
   }
 
   selectedImageFile = file
-  if (previewObjectUrl) URL.revokeObjectURL(previewObjectUrl)
-  previewObjectUrl = URL.createObjectURL(file)
-  imagePreview.onerror = () => {
-    imagePreviewWrap.hidden = true
-    messageEl.textContent = "Sawirka lama soo bandhigi karin. Fadlan dooro JPG, PNG ama WebP kale."
+  imagePreviewWrap.hidden = true
+  imagePreview.removeAttribute("src")
+  const reader = new FileReader()
+  reader.onload = () => {
+    if (reader.error || typeof reader.result !== "string") {
+      selectedImageFile = null
+      serviceImageInput.value = ""
+      messageEl.textContent = "Sawirka lama akhrin karin. Fadlan mar kale dooro."
+      return
+    }
+    imagePreview.onload = () => {
+      imagePreviewWrap.hidden = false
+      messageEl.textContent = "Sawirka waa diyaar. Adeegga la socda ayaa la kaydin doonaa."
+    }
+    imagePreview.onerror = () => {
+      imagePreviewWrap.hidden = true
+      selectedImageFile = null
+      serviceImageInput.value = ""
+      messageEl.textContent = "Sawirka lama soo bandhigi karin. Fadlan dooro sawir kale."
+    }
+    imagePreview.src = reader.result
   }
-  imagePreview.onload = () => {
-    imagePreviewWrap.hidden = false
-    messageEl.textContent = "Sawirka waa diyaar. Adeegga la socda ayaa la kaydin doonaa."
+  reader.onerror = () => {
+    selectedImageFile = null
+    serviceImageInput.value = ""
+    messageEl.textContent = "Sawirka lama akhrin karin. Fadlan mar kale dooro."
   }
-  imagePreview.src = previewObjectUrl
+  reader.readAsDataURL(file)
 })
 
 removeImageButton.addEventListener("click", clearSelectedServiceImage)
