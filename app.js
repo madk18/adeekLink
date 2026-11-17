@@ -9,6 +9,7 @@ const starterServices = [
     price: "Qiime la isla garto",
     contact: "nadiifin@example.com",
     icon: "🏡",
+    demo: true,
   },
   {
     id: "demo-2",
@@ -20,6 +21,7 @@ const starterServices = [
     price: "Laga bilaabo 200 kr",
     contact: "naqshad@example.com",
     icon: "🎨",
+    demo: true,
   },
   {
     id: "demo-3",
@@ -31,6 +33,7 @@ const starterServices = [
     price: "Qiime la isla garto",
     contact: "web@example.com",
     icon: "💻",
+    demo: true,
   },
   {
     id: "demo-4",
@@ -42,6 +45,7 @@ const starterServices = [
     price: "Laga bilaabo 300 kr",
     contact: "guuritaan@example.com",
     icon: "🚚",
+    demo: true,
   },
   {
     id: "demo-5",
@@ -53,6 +57,7 @@ const starterServices = [
     price: "Laga bilaabo 180 kr",
     contact: "cashar@example.com",
     icon: "📚",
+    demo: true,
   },
   {
     id: "demo-6",
@@ -64,6 +69,7 @@ const starterServices = [
     price: "Qiime la isla garto",
     contact: "dayactir@example.com",
     icon: "🛠️",
+    demo: true,
   },
 ]
 const icons = {
@@ -74,7 +80,7 @@ const icons = {
   Waxbarasho: "📚",
   Kale: "✨",
 }
-const STORAGE_KEY = "adeeglink-services-v1"
+// Demo listings are clearly marked; real listings are loaded from Supabase.
 const listEl = document.querySelector("#service-list")
 const searchEl = document.querySelector("#search-input")
 const categoryEl = document.querySelector("#category-filter")
@@ -85,8 +91,7 @@ const messageEl = document.querySelector("#form-message")
 
 function loadServices() {
   try {
-    const saved = localStorage.getItem(STORAGE_KEY)
-    return saved ? JSON.parse(saved) : starterServices
+    return starterServices
   } catch (error) {
     console.warn("AdeegLink: xogtii browser-ka lama akhrin karin.", error)
     return starterServices
@@ -145,7 +150,7 @@ function renderServices() {
         ? `<a class="contact-link" href="${escapeHTML(contactHref)}">La xiriir adeeg-bixiyaha ↗</a>`
         : `<div class="contact-link">Xiriir: ${escapeHTML(safeContact)}</div>`
       return `<article class="service-card">
-      <div class="card-top"><span class="service-icon" aria-hidden="true">${escapeHTML(service.icon || icons[service.category] || "✨")}</span><span class="category-pill">${escapeHTML(service.category)}</span></div>
+      <div class="card-top"><span class="service-icon" aria-hidden="true">${escapeHTML(service.icon || icons[service.category] || "✨")}</span><span><span class="category-pill">${escapeHTML(service.category)}</span>${service.demo ? '<span class="demo-pill">Tusaale</span>' : ""}</span></div>
       <h3>${escapeHTML(service.name)}</h3>
       <p class="description">${escapeHTML(service.description)}</p>
       <div class="service-meta"><span class="city">⌖ ${escapeHTML(service.city)}</span><span class="price">${escapeHTML(service.price || "Qiime la isla garto")}</span></div>
