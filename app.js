@@ -88,6 +88,11 @@ const countEl = document.querySelector("#results-count")
 const emptyEl = document.querySelector("#empty-state")
 const formEl = document.querySelector("#service-form")
 const messageEl = document.querySelector("#form-message")
+const dashboardEl = document.querySelector("#dashboard")
+const myServiceListEl = document.querySelector("#my-service-list")
+const myServiceCountEl = document.querySelector("#my-service-count")
+const dashboardWelcomeEl = document.querySelector("#dashboard-welcome")
+const dashboardMessageEl = document.querySelector("#dashboard-message")
 
 function loadServices() {
   try {
@@ -98,16 +103,6 @@ function loadServices() {
   }
 }
 let services = loadServices()
-
-function saveServices() {
-  try {
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(services))
-    return true
-  } catch (error) {
-    console.error("AdeegLink: xogta lama kaydin karin.", error)
-    return false
-  }
-}
 
 function escapeHTML(value) {
   return String(value).replace(
@@ -298,6 +293,52 @@ const authNameLabel = document.querySelector("#auth-name-label")
 let supabaseClient = null
 let authMode = "signup"
 
+
+async function loadMyServices(user) {
+  if (!supabaseClient || !user) return
+  myServiceListEl.innerHTML = '<p class="dashboard-loading">Adeegyadaada waa la soo rarayaa...</p>'
+  dashboardMessageEl.textContent = ""
+
+  const { data, error } = await supabaseClient
+    .from("services")
+    .select("id,title,category,description,city,price,created_at")
+    .eq("user_id", user.id)
+    .order("created_at", { ascending: false })
+
+  if (error) {
+    console.error("AdeegLink: dashboard listings could not be loaded.", error)
+    myServiceListEl.innerHTML = '<p class="dashboard-empty">Adeegyadaada hadda lama soo bandhigi karo. Hubi SELECT policy-ga Supabase ee user_id.</p>'
+    dashboardMessageEl.textContent = "Xogta dashboard-ka lama soo qaadi karin. Fadlan hubi rukhsadaha database-ka."
+    return
+  }
+
+  myServiceCountEl.textContent = String(data.length)
+  if (!data.length) {
+    myServiceListEl.innerHTML = '<div class="dashboard-empty"><span>✳</span><b>Weli adeeg ma aadan soo gelin.</b><small>Markaad adeeg cusub ku darto, halkan ayuu ka muuqan doonaa.</small><a href="#ku-dar">Ku dar adeeggaaga ↗</a></div>'
+    return
+  }
+
+  myServiceListEl.replaceChildren(...data.map((service) => {
+    const row = document.createElement("article")
+    row.className = "my-service-row"
+    const icon = document.createElement("span")
+    icon.className = "my-service-icon"
+    icon.textContent = icons[service.category] || "✨"
+    const details = document.createElement("div")
+    details.className = "my-service-details"
+    const title = document.createElement("h4")
+    title.textContent = service.title
+    const meta = document.createElement("p")
+    meta.textContent = [service.category, service.city, service.price || "Qiime la isla garto"].filter(Boolean).join(" · ")
+    details.append(title, meta)
+    const status = document.createElement("span")
+    status.className = "listing-status"
+    status.textContent = "Database"
+    row.append(icon, details, status)
+    return row
+  }))
+}
+
 function setAuthMessage(message, isError = false) {
   authMessage.textContent = message
   authMessage.style.color = isError ? "#b42318" : "var(--green)"
@@ -319,14 +360,20 @@ function setAuthMode(mode) {
 
 function showSignedInState(user) {
   if (user) {
+    dashboardEl.hidden = false
     const displayName =
       user.user_metadata?.full_name || user.email || "isticmaale"
     authStatus.textContent = `Waad soo gashay: ${displayName}`
+    dashboardWelcomeEl.textContent = `Ku soo dhowow, ${displayName}. Halkan waxaad kala socon kartaa adeegyada aad soo gelisay.`
+    loadMyServices(user)
     logoutButton.hidden = false
     signupButton.hidden = true
     loginButton.hidden = true
     authNameLabel.hidden = true
   } else {
+    dashboardEl.hidden = true
+    myServiceListEl.replaceChildren()
+    myServiceCountEl.textContent = "0"
     authStatus.textContent = "Xaaladda: kuma aadan soo gelin."
     logoutButton.hidden = true
     setAuthMode("signup")
