@@ -35,3 +35,18 @@
 .dashboard-empty small{font-size:10px;color:var(--muted)}
 .dashboard-empty a{font-size:10px;font-weight:800;color:var(--green);text-decoration:none;margin-top:6px}
 @media(max-width:680px){.dashboard-section{width:calc(100% - 34px);padding:48px 0}.dashboard-panel{padding:16px 13px}.dashboard-panel-heading{align-items:flex-start;flex-direction:column}.dashboard-heading h2{font-size:29px}.dashboard-stat{min-width:78px;padding:10px}.my-service-row{gap:9px}.listing-status{font-size:8px;padding:5px 7px}}
+
+
+/* Owner-only listing management controls */
+.my-service-actions{display:flex;align-items:center;gap:7px;flex:none}
+.listing-action{border:1px solid #dfe8de;background:#fff;color:var(--green);padding:8px 10px;border-radius:8px;font:700 9px 'DM Sans',sans-serif;cursor:pointer}
+.listing-action:hover{background:var(--mint)}
+.delete-listing{color:#b42318;border-color:#f1d5d2}
+.delete-listing:hover{background:#fff1f0}
+.listing-edit-form{width:100%;display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px;padding:15px 0}
+.listing-edit-form label{display:flex;flex-direction:column;gap:6px;font-size:10px;font-weight:800;color:var(--ink)}
+.listing-edit-form input,.listing-edit-form select,.listing-edit-form textarea{width:100%;border:1px solid #dfe7df;background:#fbfcfa;border-radius:8px;padding:10px;font:11px 'DM Sans',sans-serif;outline-color:#78aa81}
+.listing-edit-form textarea{resize:vertical}
+.edit-form-actions{grid-column:1/-1;display:flex;gap:9px}
+.edit-form-actions button{font-size:10px}
+@media(max-width:680px){.my-service-row{flex-wrap:wrap}.my-service-details{min-width:calc(100% - 65px)}.my-service-actions{width:100%;padding-left:49px}.listing-edit-form{grid-template-columns:1fr}.edit-form-actions{grid-column:auto}}
