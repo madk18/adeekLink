@@ -86,7 +86,7 @@
         <label>Magaca adeegga<input name="name" required maxlength="60" placeholder="Tusaale: Nadiifinta guryaha"></label>
         <div class="form-row"><label>Qaybta<select name="category" required><option value="Guri">Guri & nadaafad</option><option value="Dayactir">Dayactir</option><option value="Dijitaal">Adeegyo dijitaal ah</option><option value="Gaadiid">Gaadiid & guuritaan</option><option value="Waxbarasho">Waxbarasho & turjumaad</option><option value="Kale">Kuwa kale</option></select></label><label>Magaalada<input name="city" required maxlength="40" placeholder="Tusaale: Stockholm"></label></div>
         <div class="photo-field"><div class="photo-field-heading"><span>Sawirka adeegga</span><span class="optional-tag">Ikhtiyaari</span></div><div class="photo-upload-control"><span class="photo-upload-icon">＋</span><span class="photo-upload-copy"><b>Ka dooro sawir telefoonkaaga</b><small id="image-help">JPG, PNG ama WebP · ugu badnaan 5 MB</small></span><span class="upload-arrow">↑</span><input class="service-file-input" id="service-image" name="image" type="file" accept="image/jpeg,image/png,image/webp" aria-describedby="image-help"></div><div class="image-preview-wrap" id="image-preview-wrap" hidden><img id="image-preview" alt="Hordhaca sawirka adeegga"><div class="image-preview-info"><b>Sawirka aad dooratay</b><small>Wuxuu ka muuqan doonaa xayeysiiska adeeggaaga.</small><button type="button" id="remove-image" class="remove-image">Ka saar sawirka</button></div></div></div>
-        <label>Faahfaahinta adeegga<textarea name="description" required maxlength="240" rows="3" placeholder="Maxaad qabataa? Maxaa adeeggaaga gaar ka dhigaya?"></textarea></label>
+        <label>Faahfaahinta adeegga<textarea name="description" required maxlength="1200" rows="5" placeholder="Maxaad qabataa? Maxaa adeeggaaga gaar ka dhigaya?"></textarea></label>
         <div class="form-row"><label>Qiimaha (ikhtiyaari)<input name="price" maxlength="40" placeholder="Tusaale: 250 kr/saacaddii"></label><label>Email ama telefoon<input name="contact" required maxlength="80" placeholder="Sida lagula soo xiriiri karo"></label></div>
         <button class="primary-button submit-button" type="submit">Ku daabac adeegga <span>↗</span></button>
         <p class="form-message" id="form-message" role="status" aria-live="polite"></p>
@@ -119,6 +119,7 @@
 
     <section class="closing-cta"><div><p class="eyebrow">ADEEGLINK</p><h2>Adeeggaaga muuji.<br><span>Bulshada la xiriir.</span></h2></div><a class="primary-button" href="#ku-dar">Ku dar adeeggaaga <span>↗</span></a></section>
   </main>
+  <dialog id="service-detail-dialog" class="service-detail-dialog" aria-labelledby="detail-title"><button type="button" class="detail-close" id="detail-close" aria-label="Xir faahfaahinta">×</button><div id="service-detail-content"></div></dialog>
   <footer><a class="brand footer-brand" href="#home"><span class="brand-mark">A</span><span>Adeeg<span class="brand-light">Link</span></span></a><p>Bulshadeenna isku xir. Fursadaha wadaag.</p><div class="footer-meta"><span>© <span id="year"></span> AdeegLink</span><span>Waxaa loo dhisay bulshada.</span></div></footer>
 </body>
 </html>
