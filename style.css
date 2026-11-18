@@ -205,3 +205,29 @@
 .photo-upload-control input.service-file-input::-webkit-file-upload-button{margin-right:10px;border:0;border-radius:7px;background:#e6f2e5;color:#17643d;padding:9px 12px;font:700 11px 'DM Sans',sans-serif}
 .photo-upload-control input.service-file-input:focus-visible{outline:3px solid #8fbd66;outline-offset:2px}
 @media(max-width:560px){.photo-upload-control{grid-template-columns:40px minmax(0,1fr);padding:13px}.photo-upload-control input.service-file-input{grid-column:1/-1;min-height:44px}}
+
+/* Service cards: clear path to full listing details */
+.service-card{min-height:100%;padding:18px}
+.service-photo{width:100%;height:180px;object-fit:cover;border-radius:11px;margin-bottom:14px;background:#edf4eb}
+.service-card-placeholder{width:100%;height:150px;border-radius:11px;margin-bottom:14px;background:linear-gradient(135deg,#eaf5e9,#f1edff);display:grid;place-items:center;font-size:42px}
+.service-card .description{display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden;min-height:56px}
+.service-details-button{display:flex;align-items:center;justify-content:center;gap:8px;width:100%;border:0;border-radius:9px;background:#edf6ed;color:var(--green);padding:12px 14px;margin-top:12px;font:800 11px 'DM Sans',sans-serif;cursor:pointer;transition:background .2s,transform .2s}
+.service-details-button:hover{background:#dcefdc;transform:translateY(-1px)}
+.service-details-button span{font-size:14px}
+.service-detail-dialog{position:fixed;border:0;padding:0;width:min(560px,calc(100% - 28px));max-height:min(88vh,850px);overflow:auto;border-radius:20px;background:#fff;color:var(--ink);box-shadow:0 25px 90px #061b1060}
+.service-detail-dialog::backdrop{background:#071b12b8;backdrop-filter:blur(5px)}
+.detail-close{position:sticky;top:12px;float:right;margin:12px 12px -48px 0;z-index:2;width:36px;height:36px;border:0;border-radius:50%;background:#fff;color:var(--forest);font-size:25px;line-height:1;box-shadow:0 3px 15px #10271d20;cursor:pointer}
+.detail-hero-image,.detail-image-placeholder{display:block;width:100%;height:260px;object-fit:cover;background:linear-gradient(135deg,#eaf5e9,#f1edff)}
+.detail-image-placeholder{display:grid;place-items:center;font-size:70px}
+.detail-body{padding:26px}
+.detail-pills{display:flex;align-items:center;gap:12px}
+.detail-city{font-size:11px;color:var(--muted)}
+.detail-body h2{font:800 25px/1.2 Manrope,sans-serif;letter-spacing:-.8px;margin:15px 0 12px}
+.detail-description{font-size:14px;line-height:1.85;color:#536258;white-space:normal;overflow-wrap:anywhere}
+.detail-price{display:flex;flex-direction:column;gap:4px;padding:15px 0;border-top:1px solid var(--line);border-bottom:1px solid var(--line);margin-top:20px}
+.detail-price small,.detail-contact>small{font-size:9px;letter-spacing:1px;color:#849187;font-weight:800}
+.detail-price strong{font-size:17px;color:var(--green)}
+.detail-contact{display:grid;gap:10px;margin-top:18px}
+.detail-contact-button{display:flex;align-items:center;justify-content:center;min-height:48px;border-radius:10px;background:var(--green);color:#fff;text-decoration:none;font-size:12px;font-weight:800}
+.detail-contact-text{margin:0;padding:12px;border-radius:9px;background:#f3f7f2;font-size:12px;overflow-wrap:anywhere}
+@media(max-width:600px){.service-photo{height:190px}.service-detail-dialog{border-radius:16px}.detail-hero-image,.detail-image-placeholder{height:210px}.detail-body{padding:20px}.detail-body h2{font-size:22px}}
