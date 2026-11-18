@@ -181,13 +181,38 @@ function renderServices() {
       <h3>${escapeHTML(service.name)}</h3>
       <p class="description">${escapeHTML(service.description)}</p>
       <div class="service-meta"><span class="city">⌖ ${escapeHTML(service.city)}</span><span class="price">${escapeHTML(service.price || "Qiime la isla garto")}</span></div>
-      ${contactButton}
+      <button class="service-details-button" type="button" data-service-details="${escapeHTML(service.id)}">Faahfaahin dheeraad ah <span>↗</span></button>
     </article>`
     })
     .join("")
 
   countEl.textContent = `${filtered.length} adeeg${filtered.length === 1 ? "" : "yo"} la helay`
   emptyEl.hidden = filtered.length > 0
+}
+
+listEl.addEventListener("click", (event) => {
+  const button = event.target.closest("[data-service-details]")
+  if (!button) return
+  const service = services.find((item) => String(item.id) === button.dataset.serviceDetails)
+  if (service) showServiceDetails(service)
+})
+
+const serviceDetailDialog = document.querySelector("#service-detail-dialog")
+const serviceDetailContent = document.querySelector("#service-detail-content")
+document.querySelector("#detail-close").addEventListener("click", () => serviceDetailDialog.close())
+serviceDetailDialog.addEventListener("click", (event) => {
+  if (event.target === serviceDetailDialog) serviceDetailDialog.close()
+})
+
+function showServiceDetails(service) {
+  const contact = String(service.contact || "").trim()
+  const email = /^\\S+@\\S+\\.\\S+$/.test(contact)
+  const phone = contact.replace(/[\\s().-]/g, "")
+  const href = email ? `mailto:${encodeURIComponent(contact)}` : /^\\+?\\d{7,15}$/.test(phone) ? `tel:${phone}` : ""
+  const image = service.imageUrl ? `<img class="detail-hero-image" src="${escapeHTML(service.imageUrl)}" alt="Sawirka adeegga: ${escapeHTML(service.name)}">` : `<div class="detail-image-placeholder">${escapeHTML(service.icon || icons[service.category] || "✨")}</div>`
+  const contactAction = href ? `<a class="detail-contact-button" href="${escapeHTML(href)}">La xiriir adeeg-bixiyaha ↗</a>` : `<p class="detail-contact-text">Xiriirka: ${escapeHTML(contact || "Lama bixin")}</p>`
+  serviceDetailContent.innerHTML = `${image}<div class="detail-body"><div class="detail-pills"><span class="category-pill">${escapeHTML(service.category)}</span><span class="detail-city">⌖ ${escapeHTML(service.city || "Sweden")}</span></div><h2 id="detail-title">${escapeHTML(service.name)}</h2><p class="detail-description">${escapeHTML(service.description || "Faahfaahin lama bixin.").replace(/\\n/g, "<br>")}</p><div class="detail-price"><small>QIIMAHA</small><strong>${escapeHTML(service.price || "Qiime la isla garto")}</strong></div><div class="detail-contact"><small>XIRIIRKA ADEEG-BIXIYAHA</small>${contactAction}</div></div>`
+  serviceDetailDialog.showModal()
 }
 
 searchEl.addEventListener("input", renderServices)
@@ -428,7 +453,7 @@ async function loadMyServices(user) {
 
   const { data, error } = await supabaseClient
     .from("services")
-    .select("id,title,category,description,city,price,contact,created_at")
+    .select("id,title,category,description,city,price,contact,image_url,created_at")
     .eq("user_id", user.id)
     .order("created_at", { ascending: false })
 
@@ -525,7 +550,7 @@ function createEditForm(service) {
   const description = document.createElement("textarea")
   description.name = "description"
   description.required = true
-  description.maxLength = 240
+  description.maxLength = 1200
   description.rows = 3
   description.value = service.description || ""
   descriptionLabel.append(description)
